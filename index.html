@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+   
+
+    <title>Tic Tac Toe</title>
+    <style>
+        
+
+         body {
+        background-color: rgb(255, 84, 66); /*背景顏色*/
+        text-align: center;
+    
+         }
+        h1 {
+           font-family: Arial, sans-serif; /*標題使用Arial或sana-serif作為字體*/
+           color: rgb(255, 255, 255);
+           text-align: center;/*字中*/
+           font-size: 40px;
+           
+        }
+      
+        table {/*棋盤*/
+            border-collapse: collapse; /*設定表格邊框合併*/
+            margin: 0 auto;  /*設定邊距為自動，使表格水平置中*/
+            color:rgb(254, 255, 255)
+            
+            
+        }
+
+        td {
+            width: 150px;/*設定格子的大小*/
+            height: 150px;
+            text-align: center;
+            font-size: 100px;  /*XO的大小*/
+            border: 5px solid rgb(253, 253, 253); /*外框*/
+            cursor: pointer;  /*設定滑鼠游標樣式為指向手形，表示這是一個可點擊的元素*/
+        }
+
+        .winner {/*獲勝之後的樣式*/
+            background-color: rgba(40, 255, 40, 0.806);
+            font-weight: bold;/*字體加粗*/
+            text-align: center;
+        }
+
+        .game-over {/*遊戲結束的樣式*/
+          
+            font-weight: bold;
+            text-align: center;
+            color:aliceblue;
+            
+        }
+       button{
+        margin: 0 auto;
+        width: 300px; /*設置寬度*/
+        height: 80px; /* 設置高度*/
+         line-height: 80px; /* 定行高等於按鈕的高度，使按鈕內容垂直居中 */
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);/*內容顏色*/
+        font-size: 20px;/*內容大小*/
+        font-weight: bold;/*內容加粗*/
+         cursor: pointer;
+        
+       }
+ 
+   
+    </style>
+    <script>
+        var board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+
+        var current_player = 'X';
+        var winner = null;
+        var game_over = false;
+        var score1=0;
+        var score2=0;
+       
+        function play(row, col) {
+            if (!game_over && board[row][col] === '') {//檢查遊戲是否結束或是棋盤是否為空
+                board[row][col] = current_player;//將位置設為玩家符號
+                if (current_player === 'X') {//交換玩家符號
+                    current_player = 'O';
+                } else {
+                    current_player = 'X';
+                }
+              
+                checkWinner();//檢查勝利
+                
+                checkBoardFull();//檢查是否平局
+                
+                renderBoard();//更新棋盤狀態
+                renderStatus();//當前狀態的顯示
+            }
+        }
+        
+        function checkWinner() {//檢查勝利
+            for (var row = 0; row < 3; row++) {//檢查行
+                if (board[row][0] === board[row][1] && board[row][1] === board[row][2] && board[row][0] !== '') {
+                    winner = board[row][0];
+                    if (winner === 'X') {
+            score1 += 1;
+           document.getElementById('score1').innerHTML = 'X: ' + score1;//更新對應得分的 HTML 內容
+            } else {
+            score2 += 1;
+           document.getElementById('score2').innerHTML = 'O: ' + score2;//更新對應得分的 HTML 內容
+            }
+                    game_over = true;
+                    return;
+                }
+            }
+
+            for (var col = 0; col < 3; col++) {//檢查列
+                if (board[0][col] === board[1][col] && board[1][col] === board[2][col] && board[0][col] !== '') {
+                    winner = board[0][col];
+                    if (winner === 'X') {
+            score1 += 1;
+           document.getElementById('score1').innerHTML = 'X: ' + score1;
+            } else {
+            score2 += 1;
+           document.getElementById('score2').innerHTML = 'O: ' + score2;
+            }
+                    game_over = true;
+                    return;
+                }
+            }
+           //檢查對角線(坐上到右下)
+            if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== '') {
+                winner = board[0][0];
+                if (winner === 'X') {
+            score1 += 1;
+           document.getElementById('score1').innerHTML = 'X: ' + score1;
+            } else {
+            score2 += 1;
+           document.getElementById('score2').innerHTML = 'O: ' + score2;
+            }
+                game_over = true;
+                return;
+            }
+            //檢查對角線(右上到左下)
+            if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== '') {
+                winner = board[0][2];
+                if (winner === 'X') {
+            score1 += 1;
+           document.getElementById('score1').innerHTML = 'X: ' + score1;
+            } else {
+            score2 += 1;
+           document.getElementById('score2').innerHTML = 'O: ' + score2;
+            }
+                game_over = true;
+                return;
+            }
+        }
+
+        function checkBoardFull() {//檢查是否平局
+            for (var row = 0; row < 3; row++) {
+                for (var col = 0; col < 3; col++) {
+                    if (board[row][col] === '') {
+                        return;//提前結束函式並返回到函式被呼叫的地方
+                    }
+                }
+            }
+            game_over = true;
+        }
+
+        function restart() {//重設遊戲
+            board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ]
+            current_player = 'X';
+            winner = null;
+            game_over = false;
+            score1=0;
+            score2=0;
+            document.getElementById('score1').innerHTML = 'X: ' + score1;
+    document.getElementById('score2').innerHTML = 'O: ' + score2;
+
+
+            renderBoard();
+            renderStatus();
+        }
+        function next(){
+            board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            current_player = 'X';
+            winner = null;
+            game_over = false;
+           
+            
+
+            renderBoard();
+            renderStatus();
+
+        }
+       
+
+        function renderBoard() {
+            var table = document.getElementById('board');//代表遊戲棋盤的表格
+            table.innerHTML = '';//將這個表格的內容清空，以便重新渲染棋盤
+
+            for (var row = 0; row < 3; row++) {
+                var tr = document.createElement('tr');//創建了一個新的 <tr> 元素
+                for (var col = 0; col < 3; col++) {
+                    var td = document.createElement('td');//創建出單元格
+                    td.addEventListener('click', (function(r, c) {//點擊事件監聽器
+                        return function() {
+                            play(r, c);//用 play(r, c) 函式
+                        };
+                    })(row, col));
+                    td.innerHTML = board[row][col];
+                    if (isWinnerCell(row, col)) {
+                        td.classList.add('winner');
+                    }
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+        }
+        function renderStatus() {//更改狀態
+            var status = document.getElementById('status');
+            status.innerHTML = '';
+            if (winner) {//如果winner不為空
+                status.innerHTML = 'Winner: ' + winner;//顯示贏家符號和遊戲結束提示
+                status.classList.add('game-over');//game-over加入到status.classList 
+                
+            } else if (game_over) {//平手
+                status.innerHTML = 'Game Over. It\'s a draw!';//顯示遊戲結束提示
+                status.classList.add('game-over');
+            } else {//交換符號後的狀態
+                status.innerHTML = 'Current Player: ' + current_player;
+            }
+           
+             
+        }
+
+        function isWinnerCell(row, col) {
+            var winningCells = getWinningCells();//先獲取所有格子符合規則勝利的格子
+            for (var i = 0; i < winningCells.length; i++) {//判斷方格是否為贏家方格
+                if (winningCells[i][0] === row && winningCells[i][1] === col) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function getWinningCells() {
+            var winningCells = [];//建立陣列
+
+            for (var row = 0; row < 3; row++) {//以行判斷單位格都相同且不為空
+                if (board[row][0] === board[row][1] && board[row][1] === board[row][2] && board[row][0] !== '') {
+                    winningCells.push([row, 0]);//如果判斷結果為true則將這些位置加入陣列
+                    winningCells.push([row, 1]);
+                    winningCells.push([row, 2]);
+                    return winningCells;
+                }
+            }
+
+            for (var col = 0; col < 3; col++) {//以列判斷單位格都相同且不為空
+                if (board[0][col] === board[1][col] && board[1][col] === board[2][col] && board[0][col] !== '') {
+                    winningCells.push([0, col]);
+                    winningCells.push([1, col]);
+                    winningCells.push([2, col]);
+                    return winningCells;
+                }
+            }
+
+            if (board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== '') {//對角線
+                winningCells.push([0, 0]);
+                winningCells.push([1, 1]);
+                winningCells.push([2, 2]);
+                return winningCells;
+            }
+
+            if (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== '') {//對角線
+                winningCells.push([0, 2]);
+                winningCells.push([1, 1]);
+                winningCells.push([2, 0]);
+                return winningCells;
+            }
+
+            return winningCells;
+        }
+
+        
+
+      
+    </script>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+   
+    <div id="score1">X: 0</div>
+    <div id="score2">O: 0</div>
+    
+      <table id="board">
+           <tr>
+            <td onclick="play(0, 0)"></td>
+            <td onclick="play(0, 1)"></td>
+            <td onclick="play(0, 2)"></td>
+        </tr>
+        <tr>
+            <td onclick="play(1, 0)"></td>
+            <td onclick="play(1, 1)"></td>
+            <td onclick="play(1, 2)"></td>
+        </tr>
+        <tr>
+            <td onclick="play(2, 0)"></td>
+            <td onclick="play(2, 1)"></td>
+            <td onclick="play(2, 2)"></td>
+        </tr>
+    </table>
+
+
+    <p id="status"></p>
+    <button onclick="restart()">Restart</button>
+    <button onclick="next()">next</button>
+
+</body>
+   
+</html>
